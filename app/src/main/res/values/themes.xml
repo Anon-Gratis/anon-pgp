@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Anon PGP base theme. Forced dark, black surfaces, white actions,
+         red accents reserved for error/destructive. Same palette as the website. -->
+    <style name="Theme.AnonPgp" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="android:statusBarColor">@color/anon_black</item>
+        <item name="android:navigationBarColor">@color/anon_black</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowBackground">@color/anon_black</item>
+        <item name="colorPrimary">@color/anon_white</item>
+        <item name="colorOnPrimary">@color/anon_black</item>
+        <item name="colorPrimaryContainer">@color/anon_dim</item>
+        <item name="colorOnPrimaryContainer">@color/anon_white</item>
+        <item name="colorSecondary">@color/anon_mid</item>
+        <item name="colorOnSecondary">@color/anon_black</item>
+        <item name="colorSecondaryContainer">@color/anon_dim</item>
+        <item name="colorOnSecondaryContainer">@color/anon_light</item>
+        <item name="colorError">@color/anon_red</item>
+        <item name="colorOnError">@color/anon_white</item>
+        <item name="android:colorBackground">@color/anon_black</item>
+        <item name="colorOnBackground">@color/anon_light</item>
+        <item name="colorSurface">@color/anon_darker</item>
+        <item name="colorOnSurface">@color/anon_light</item>
+        <item name="colorSurfaceVariant">@color/anon_dark</item>
+        <item name="colorOnSurfaceVariant">@color/anon_light</item>
+        <item name="colorOutline">@color/anon_outline</item>
+        <!-- AlertDialog body comes out light on most devices, so dialog buttons
+             need explicit dark text or they vanish against the white surface. -->
+        <item name="materialAlertDialogTheme">@style/AnonDialogTheme</item>
+    </style>
+
+    <style name="Theme.AnonPgp.NoActionBar" parent="Theme.AnonPgp" />
+
+    <!-- Dialog overlay: the dialog body keeps whatever colour the system gave it
+         (typically white), so we force every dialog button to dark text and the
+         title/body text to dark too. Dialog EditTexts are styled explicitly in
+         code via UiUtils.dialogEditText() (also black-on-light). -->
+    <style name="AnonDialogTheme" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="colorPrimary">@color/anon_black</item>
+        <item name="colorOnSurface">@color/anon_black</item>
+        <item name="colorOnSurfaceVariant">#FF333333</item>
+        <item name="buttonBarPositiveButtonStyle">@style/AnonDialogButton</item>
+        <item name="buttonBarNegativeButtonStyle">@style/AnonDialogButton</item>
+        <item name="buttonBarNeutralButtonStyle">@style/AnonDialogButton</item>
+    </style>
+
+    <style name="AnonDialogButton" parent="Widget.Material3.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/anon_black</item>
+        <item name="android:fontFamily">monospace</item>
+        <item name="android:textStyle">bold</item>
+        <item name="rippleColor">#33000000</item>
+    </style>
+
+    <!-- Reusable widget styles for the main activity. -->
+    <style name="SectionHeader" parent="@android:style/TextAppearance">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/anon_white</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">monospace</item>
+        <item name="android:letterSpacing">0.1</item>
+        <item name="android:paddingStart">8dp</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:layout_marginBottom">8dp</item>
+        <item name="android:background">@color/anon_dark</item>
+    </style>
+
+    <style name="AnonField" parent="Widget.AppCompat.EditText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@color/anon_dim</item>
+        <item name="android:textColor">@color/anon_white</item>
+        <item name="android:textColorHint">@color/anon_mid</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:fontFamily">monospace</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:gravity">top</item>
+        <item name="android:layout_marginBottom">8dp</item>
+        <item name="android:inputType">textMultiLine</item>
+    </style>
+
+    <style name="TabText" parent="TextAppearance.Material3.LabelLarge">
+        <item name="android:textSize">12sp</item>
+        <item name="android:fontFamily">monospace</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:letterSpacing">0.1</item>
+        <item name="textAllCaps">false</item>
+    </style>
+
+    <!-- Material3 silently upgrades <Button> to MaterialButton at inflation,
+         which ignores android:background. Set backgroundTint on the Material3
+         button parent instead. Square corners + no elevation to fit the
+         terminal aesthetic. -->
+    <style name="AnonBtn" parent="Widget.Material3.Button.UnelevatedButton">
+        <item name="android:layout_height">48dp</item>
+        <item name="backgroundTint">@color/anon_dim</item>
+        <item name="android:textColor">@color/anon_white</item>
+        <item name="rippleColor">@color/anon_outline</item>
+        <item name="cornerRadius">2dp</item>
+        <item name="strokeColor">@color/anon_outline</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">monospace</item>
+        <item name="android:letterSpacing">0.15</item>
+        <item name="android:layout_marginBottom">8dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+    </style>
+</resources>

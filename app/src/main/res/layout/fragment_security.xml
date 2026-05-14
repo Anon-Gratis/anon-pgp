@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/anon_black">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            style="@style/SectionHeader"
+            android:text="// APP LOCK" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="A PIN gates this app on launch and after backgrounding. Biometric unlock (fingerprint / face) is an optional shortcut — PIN is always the fallback. No PIN recovery: forget it and you must clear app data and re-import keys."
+            android:textColor="@color/anon_mid"
+            android:textSize="11sp"
+            android:fontFamily="monospace"
+            android:lineSpacingExtra="2dp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Enable toggle -->
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/enableLockSwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Enable app lock"
+            android:textColor="@color/anon_white"
+            android:fontFamily="monospace"
+            android:textSize="14sp"
+            android:padding="8dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/changePinBtn"
+            style="@style/AnonBtn"
+            android:layout_width="match_parent"
+            android:text="[ CHANGE PIN ]"
+            android:layout_marginTop="8dp"
+            android:visibility="gone" />
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/biometricSwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Biometric unlock"
+            android:textColor="@color/anon_white"
+            android:fontFamily="monospace"
+            android:textSize="14sp"
+            android:padding="8dp"
+            android:layout_marginTop="8dp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/biometricHint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="@color/anon_mid"
+            android:textSize="10sp"
+            android:fontFamily="monospace"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="8dp"
+            android:visibility="gone" />
+
+        <TextView
+            style="@style/SectionHeader"
+            android:text="// PRIVACY"
+            android:layout_marginTop="24dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="App content is blurred in the Recent Apps switcher and screenshots are blocked inside the app at all times (FLAG_SECURE), independent of the lock setting."
+            android:textColor="@color/anon_mid"
+            android:textSize="11sp"
+            android:fontFamily="monospace"
+            android:lineSpacingExtra="2dp" />
+    </LinearLayout>
+</ScrollView>

@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="@color/anon_black">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="16dp">
+
+        <TextView
+            style="@style/SectionHeader"
+            android:text="// ACTION" />
+
+        <RadioGroup
+            android:id="@+id/actionGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp">
+
+            <RadioButton
+                android:id="@+id/actionSign"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="SIGN"
+                android:textColor="@color/anon_white"
+                android:textSize="12sp"
+                android:fontFamily="monospace"
+                android:checked="true"
+                android:buttonTint="@color/anon_white" />
+
+            <RadioButton
+                android:id="@+id/actionVerify"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="VERIFY"
+                android:textColor="@color/anon_white"
+                android:textSize="12sp"
+                android:fontFamily="monospace"
+                android:buttonTint="@color/anon_white" />
+        </RadioGroup>
+
+        <RadioGroup
+            android:id="@+id/modeGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="12dp">
+
+            <RadioButton
+                android:id="@+id/modeText"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="TEXT"
+                android:textColor="@color/anon_white"
+                android:textSize="12sp"
+                android:fontFamily="monospace"
+                android:checked="true"
+                android:buttonTint="@color/anon_white" />
+
+            <RadioButton
+                android:id="@+id/modeFile"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="FILE"
+                android:textColor="@color/anon_white"
+                android:textSize="12sp"
+                android:fontFamily="monospace"
+                android:buttonTint="@color/anon_white" />
+        </RadioGroup>
+
+        <!-- SIGN / TEXT -->
+        <LinearLayout
+            android:id="@+id/panelSignText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/signTextInput"
+                style="@style/AnonField"
+                android:hint="@string/hint_paste_plaintext"
+                android:minLines="4"
+                android:maxLines="10" />
+
+            <Button
+                android:id="@+id/btnSignText"
+                style="@style/AnonBtn"
+                android:layout_width="match_parent"
+                android:text="SIGN TEXT &#8594;" />
+
+            <EditText
+                android:id="@+id/signTextOutput"
+                style="@style/AnonField"
+                android:hint="@string/hint_signature_result"
+                android:minLines="4"
+                android:maxLines="12"
+                android:focusable="true"
+                android:textIsSelectable="true" />
+
+            <Button
+                android:id="@+id/btnCopySig"
+                style="@style/AnonBtn"
+                android:layout_width="match_parent"
+                android:text="COPY SIGNATURE" />
+        </LinearLayout>
+
+        <!-- SIGN / FILE -->
+        <LinearLayout
+            android:id="@+id/panelSignFile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/signFilePicked"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/anon_dim"
+                android:padding="12dp"
+                android:textColor="@color/anon_mid"
+                android:textSize="12sp"
+                android:fontFamily="monospace"
+                android:text="(no file picked)"
+                android:layout_marginBottom="8dp" />
+
+            <Button
+                android:id="@+id/btnPickSignFile"
+                style="@style/AnonBtn"
+                android:layout_width="match_parent"
+                android:text="PICK FILE TO SIGN" />
+
+            <Button
+                android:id="@+id/btnSignFile"
+                style="@style/AnonBtn"
+                android:layout_width="match_parent"
+                android:text="SIGN &amp; SAVE .sig &#8594;"
+                android:enabled="false" />
+        </LinearLayout>
+
+        <!-- VERIFY / TEXT -->
+        <LinearLayout
+            android:id="@+id/panelVerifyText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <EditText
+                android:id="@+id/verifyTextInput"
+                style="@style/AnonField"
+                android:hint="@string/hint_paste_signed_text"
+                android:minLines="3"
+                android:maxLines="8" />
+
+            <EditText
+                android:id="@+id/verifySigInput"
+                style="@style/AnonField"
+                android:hint="@string/hint_paste_signature"
+                android:minLines="4"
+                android:maxLines="10" />
+
+            <Button
+                android:id="@+id/btnVerifyText"
+                style="@style/AnonBtn"
+                android:layout_width="match_parent"
+                android:text="VERIFY &#8594;" />
+        </LinearLayout>
+
+        <!-- VERIFY / FILE -->
+        <LinearLayout
+            android:id="@+id/panelVerifyFile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/verifyFilePicked"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/anon_dim"
+                android:padding="12dp"
+                android:textColor="@color/anon_mid"
+                android:textSize="12sp"
+                android:fontFamily="monospace"
+                android:text="(no data file picked)"
+                android:layout_marginBottom="8dp" />
+
+            <Button
+                android:id="@+id/btnPickVerifyFile"
+                style="@style/AnonBtn"
+                android:layout_width="match_parent"
+                android:text="PICK DATA FILE" />
+
+            <TextView
+                android:id="@+id/verifySigFilePicked"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/anon_dim"
+                android:padding="12dp"
+                android:textColor="@color/anon_mid"
+                android:textSize="12sp"
+                android:fontFamily="monospace"
+                android:text="(no signature file picked)"
+                android:layout_marginBottom="8dp" />
+
+            <Button
+                android:id="@+id/btnPickVerifySigFile"
+                style="@style/AnonBtn"
+                android:layout_width="match_parent"
+                android:text="PICK .sig FILE" />
+
+            <Button
+                android:id="@+id/btnVerifyFile"
+                style="@style/AnonBtn"
+                android:layout_width="match_parent"
+                android:text="VERIFY &#8594;"
+                android:enabled="false" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/verifyResult"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:background="@color/anon_darker"
+            android:textColor="@color/anon_mid"
+            android:textSize="12sp"
+            android:fontFamily="monospace"
+            android:text=""
+            android:layout_marginTop="12dp"
+            android:visibility="gone" />
+    </LinearLayout>
+</ScrollView>

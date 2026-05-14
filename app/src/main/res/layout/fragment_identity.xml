@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="@color/anon_black">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="16dp">
+
+        <TextView
+            style="@style/SectionHeader"
+            android:text="// YOUR KEYS" />
+
+        <TextView
+            android:id="@+id/emptyState"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:textColor="@color/anon_red"
+            android:textSize="12sp"
+            android:fontFamily="monospace"
+            android:background="@color/anon_dim"
+            android:text="[ no keys yet — GENERATE one or IMPORT an existing key ]"
+            android:layout_marginBottom="8dp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerKeys"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"
+            android:background="@color/anon_black"
+            android:layout_marginBottom="8dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+
+            <Button
+                android:id="@+id/btnGenerate"
+                style="@style/AnonBtn"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="4dp"
+                android:text="GENERATE NEW KEY" />
+
+            <Button
+                android:id="@+id/btnImportSecret"
+                style="@style/AnonBtn"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_marginStart="4dp"
+                android:text="IMPORT KEY" />
+        </LinearLayout>
+
+        <TextView
+            style="@style/SectionHeader"
+            android:text="// ACTIVE KEY ACTIONS" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/anon_mid"
+            android:textSize="11sp"
+            android:fontFamily="monospace"
+            android:padding="8dp"
+            android:text="These buttons operate on whichever key is selected above."
+            android:layout_marginBottom="4dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="4dp">
+
+            <Button
+                android:id="@+id/btnCopyPub"
+                style="@style/AnonBtn"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="4dp"
+                android:text="COPY PUBLIC KEY"
+                android:enabled="false" />
+
+            <Button
+                android:id="@+id/btnShowQr"
+                style="@style/AnonBtn"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_marginStart="4dp"
+                android:text="SHOW QR"
+                android:enabled="false" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="4dp">
+
+            <Button
+                android:id="@+id/btnSavePubFile"
+                style="@style/AnonBtn"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="4dp"
+                android:text="EXPORT PUBLIC KEY"
+                android:enabled="false" />
+
+            <Button
+                android:id="@+id/btnExportSecret"
+                style="@style/AnonBtn"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_marginStart="4dp"
+                android:text="EXPORT SECRET KEY"
+                android:enabled="false" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnDeleteActive"
+            style="@style/AnonBtn"
+            android:layout_width="match_parent"
+            android:text="DELETE ACTIVE KEY"
+            android:enabled="false"
+            android:textColor="@color/anon_red"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/anon_mid"
+            android:textSize="11sp"
+            android:fontFamily="monospace"
+            android:lineSpacingExtra="2dp"
+            android:padding="8dp"
+            android:text="Secret keys are stored ASCII-armored, still passphrase-protected. Exporting writes the same passphrase-protected bytes to a file you choose — treat that file with care." />
+
+    </LinearLayout>
+</ScrollView>

@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="@color/anon_black">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="16dp">
+
+        <TextView
+            style="@style/SectionHeader"
+            android:text="// RECIPIENT" />
+
+        <TextView
+            android:id="@+id/recipientPicker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/anon_dim"
+            android:padding="14dp"
+            android:textColor="@color/anon_white"
+            android:textSize="12sp"
+            android:fontFamily="monospace"
+            android:text="(tap to choose contact)"
+            android:layout_marginBottom="16dp"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <TextView
+            style="@style/SectionHeader"
+            android:text="// MODE" />
+
+        <RadioGroup
+            android:id="@+id/modeGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="12dp">
+
+            <RadioButton
+                android:id="@+id/modeText"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="TEXT"
+                android:textColor="@color/anon_white"
+                android:textSize="12sp"
+                android:fontFamily="monospace"
+                android:checked="true"
+                android:buttonTint="@color/anon_white" />
+
+            <RadioButton
+                android:id="@+id/modeFile"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="FILE"
+                android:textColor="@color/anon_white"
+                android:textSize="12sp"
+                android:fontFamily="monospace"
+                android:buttonTint="@color/anon_white" />
+        </RadioGroup>
+
+        <!-- TEXT MODE -->
+        <LinearLayout
+            android:id="@+id/textPanel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/plaintextIn"
+                style="@style/AnonField"
+                android:hint="@string/hint_paste_plaintext"
+                android:minLines="4"
+                android:maxLines="10" />
+
+            <Button
+                android:id="@+id/btnEncryptText"
+                style="@style/AnonBtn"
+                android:layout_width="match_parent"
+                android:text="ENCRYPT TEXT &#8594;" />
+
+            <EditText
+                android:id="@+id/ciphertextOut"
+                style="@style/AnonField"
+                android:hint="@string/hint_ciphertext_result"
+                android:minLines="5"
+                android:maxLines="12"
+                android:focusable="true"
+                android:textIsSelectable="true" />
+
+            <Button
+                android:id="@+id/btnCopyCipher"
+                style="@style/AnonBtn"
+                android:layout_width="match_parent"
+                android:text="COPY CIPHERTEXT" />
+        </LinearLayout>
+
+        <!-- FILE MODE -->
+        <LinearLayout
+            android:id="@+id/filePanel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/pickedFile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/anon_dim"
+                android:padding="12dp"
+                android:textColor="@color/anon_mid"
+                android:textSize="12sp"
+                android:fontFamily="monospace"
+                android:text="(no input file picked)"
+                android:layout_marginBottom="8dp" />
+
+            <Button
+                android:id="@+id/btnPickFile"
+                style="@style/AnonBtn"
+                android:layout_width="match_parent"
+                android:text="PICK FILE TO ENCRYPT" />
+
+            <Button
+                android:id="@+id/btnEncryptFile"
+                style="@style/AnonBtn"
+                android:layout_width="match_parent"
+                android:text="ENCRYPT &amp; SAVE AS… &#8594;"
+                android:enabled="false" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/anon_mid"
+                android:textSize="11sp"
+                android:fontFamily="monospace"
+                android:lineSpacingExtra="2dp"
+                android:padding="8dp"
+                android:text="Output is ASCII-armored. Suggested filename: input + .asc" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/anon_black">
+
+    <!-- HEADER -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="12dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="// ANON PGP"
+            android:textColor="@color/anon_white"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:fontFamily="monospace"
+            android:letterSpacing="0.1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="local-only · no network · no telemetry"
+            android:textColor="@color/anon_mid"
+            android:textSize="11sp"
+            android:fontFamily="monospace"
+            android:letterSpacing="0.05" />
+    </LinearLayout>
+
+    <!-- TABS -->
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/anon_black"
+        app:tabBackground="@color/anon_black"
+        app:tabIndicatorColor="@color/anon_white"
+        app:tabIndicatorHeight="2dp"
+        app:tabMode="scrollable"
+        app:tabSelectedTextColor="@color/anon_white"
+        app:tabTextColor="@color/anon_mid"
+        app:tabTextAppearance="@style/TabText" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/anon_outline" />
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/anon_black" />
+
+    <!-- Footer status line -->
+    <TextView
+        android:id="@+id/statusLine"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:textColor="@color/anon_mid"
+        android:textSize="11sp"
+        android:fontFamily="monospace"
+        android:background="@color/anon_darker"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:text="@string/ready" />
+</LinearLayout>

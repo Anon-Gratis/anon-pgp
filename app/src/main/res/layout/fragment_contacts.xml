@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/anon_black"
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="16dp">
+
+    <TextView
+        style="@style/SectionHeader"
+        android:text="// IMPORT" />
+
+    <EditText
+        android:id="@+id/inputPubKey"
+        style="@style/AnonField"
+        android:hint="@string/hint_paste_pubkey"
+        android:minLines="3"
+        android:maxLines="6" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="8dp">
+
+        <Button
+            android:id="@+id/btnPasteImport"
+            style="@style/AnonBtn"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="4dp"
+            android:text="IMPORT" />
+
+        <Button
+            android:id="@+id/btnScanQr"
+            style="@style/AnonBtn"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_marginStart="4dp"
+            android:text="SCAN QR" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnImportFile"
+        style="@style/AnonBtn"
+        android:layout_width="match_parent"
+        android:text="IMPORT FROM FILE"
+        android:layout_marginBottom="16dp" />
+
+    <TextView
+        style="@style/SectionHeader"
+        android:text="// CONTACTS" />
+
+    <TextView
+        android:id="@+id/emptyState"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:textColor="@color/anon_mid"
+        android:textSize="12sp"
+        android:fontFamily="monospace"
+        android:background="@color/anon_dim"
+        android:text="@string/no_contacts" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerContacts"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/anon_black"
+        android:scrollbars="vertical" />
+</LinearLayout>

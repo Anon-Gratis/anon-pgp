@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="anon_black">#FF000000</color>
+    <color name="anon_darker">#FF050505</color>
+    <color name="anon_dark">#FF0A0A0A</color>
+    <color name="anon_dim">#FF1A1A1A</color>
+    <color name="anon_outline">#FF333333</color>
+    <color name="anon_mid">#FF888888</color>
+    <color name="anon_light">#FFCCCCCC</color>
+    <color name="anon_white">#FFFFFFFF</color>
+    <color name="anon_red">#FFFF0000</color>
+    <color name="anon_red_dim">#FF660000</color>
+    <color name="anon_green">#FF00C853</color>
+</resources>
