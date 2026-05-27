@@ -30,6 +30,8 @@ class EncryptFragment : Fragment() {
     private var pickedFileSize: Long = -1L
 
     private lateinit var recipientPicker: TextView
+    private lateinit var recipientPanel: LinearLayout
+    private lateinit var encryptionTypeGroup: RadioGroup
     private lateinit var modeGroup: RadioGroup
     private lateinit var textPanel: LinearLayout
     private lateinit var filePanel: LinearLayout
@@ -66,6 +68,8 @@ class EncryptFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         recipientPicker = view.findViewById(R.id.recipientPicker)
+        recipientPanel = view.findViewById(R.id.recipientPanel)
+        encryptionTypeGroup = view.findViewById(R.id.encryptionTypeGroup)
         modeGroup = view.findViewById(R.id.modeGroup)
         textPanel = view.findViewById(R.id.textPanel)
         filePanel = view.findViewById(R.id.filePanel)
@@ -76,6 +80,11 @@ class EncryptFragment : Fragment() {
         btnEncryptFile = view.findViewById(R.id.btnEncryptFile)
 
         recipientPicker.setOnClickListener { showRecipientPicker() }
+        encryptionTypeGroup.setOnCheckedChangeListener { _, id ->
+            // Hide the recipient picker when the user opts for a symmetric
+            // passphrase — there's no recipient in that flow.
+            recipientPanel.visibility = if (id == R.id.typeSymmetric) View.GONE else View.VISIBLE
+        }
         modeGroup.setOnCheckedChangeListener { _, id ->
             val isText = id == R.id.modeText
             textPanel.visibility = if (isText) View.VISIBLE else View.GONE
@@ -117,9 +126,17 @@ class EncryptFragment : Fragment() {
     }
 
     private fun onEncryptText() {
-        val contact = selectedContact ?: return UiUtils.toast(requireContext(), "pick a recipient first")
         val plain = plaintextIn.text.toString()
         if (plain.isEmpty()) return UiUtils.toast(requireContext(), "nothing to encrypt")
+        if (encryptionTypeGroup.checkedRadioButtonId == R.id.typeSymmetric) {
+            promptForSymmetricPassphraseAndEncrypt(plain)
+        } else {
+            val contact = selectedContact ?: return UiUtils.toast(requireContext(), "pick a recipient first")
+            encryptToContact(plain, contact)
+        }
+    }
+
+    private fun encryptToContact(plain: String, contact: ContactRoster.Contact) {
         status("encrypting…")
         scope.launch {
             try {
@@ -132,6 +149,40 @@ class EncryptFragment : Fragment() {
                 status("ENCRYPT FAILED: ${t.message}")
             }
         }
+    }
+
+    private fun promptForSymmetricPassphraseAndEncrypt(plain: String) {
+        val pwField = UiUtils.dialogEditText(
+            requireContext(),
+            hint = "Passphrase (8+ chars)",
+            inputType = android.text.InputType.TYPE_CLASS_TEXT or
+                android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD,
+        )
+        AlertDialog.Builder(requireContext())
+            .setTitle("Symmetric encryption passphrase")
+            .setMessage("Anyone with this passphrase can decrypt. No key is used.")
+            .setView(pwField)
+            .setNegativeButton(R.string.cancel, null)
+            .setPositiveButton("ENCRYPT") { _, _ ->
+                val pass = pwField.text.toString()
+                if (pass.length < 8) {
+                    UiUtils.toast(requireContext(), "passphrase must be at least 8 chars")
+                    return@setPositiveButton
+                }
+                status("encrypting (symmetric)…")
+                scope.launch {
+                    try {
+                        val ct = withContext(Dispatchers.Default) {
+                            PgpHelper.encryptSymmetric(plain.toByteArray(), pass.toCharArray())
+                        }
+                        ciphertextOut.setText(String(ct))
+                        status("> encrypted ${plain.length} chars → ${ct.size} bytes (symmetric)")
+                    } catch (t: Throwable) {
+                        status("ENCRYPT FAILED: ${t.message}")
+                    }
+                }
+            }
+            .show()
     }
 
     private fun onInputPicked(uri: Uri) {

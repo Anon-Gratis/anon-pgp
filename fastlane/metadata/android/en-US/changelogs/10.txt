@@ -1,0 +1,9 @@
+Initial public release.
+
+* Multiple keypair management
+* Curve25519 and RSA key generation
+* Encrypt, decrypt, sign, verify
+* QR exchange for public keys
+* App lock (PIN + biometric)
+* Panic API support
+* No network permissions

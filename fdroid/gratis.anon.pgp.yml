@@ -1,0 +1,43 @@
+# F-Droid metadata for AnonPGP.
+#
+# To submit:
+#   1. Fork https://gitlab.com/fdroid/fdroiddata
+#   2. Copy this file to `metadata/gratis.anon.pgp.yml` in your fork
+#   3. Run `fdroid readmeta && fdroid lint gratis.anon.pgp` (catches schema errors)
+#   4. Run `fdroid build --latest gratis.anon.pgp` locally to confirm the build
+#      reproduces inside their buildserver (optional but reduces back-and-forth)
+#   5. Open a merge request against fdroiddata `master`
+#
+# This file is kept in-tree so it stays in sync with the source. F-Droid does
+# not read it from here — it reads the copy you place in fdroiddata.
+
+Categories:
+  - Security
+
+License: GPL-3.0-or-later
+
+AuthorName: Anonymous Gratis
+AuthorEmail: admin@anon.gratis
+AuthorWebSite: https://anonymous.gratis
+
+WebSite: https://anonymous.gratis/apps.html
+SourceCode: https://github.com/Anon-Gratis/anon-pgp
+IssueTracker: https://github.com/Anon-Gratis/anon-pgp/issues
+
+AutoName: Anon PGP
+
+RepoType: git
+Repo: https://github.com/Anon-Gratis/anon-pgp.git
+
+Builds:
+  - versionName: 0.3.6
+    versionCode: 10
+    commit: v0.3.6
+    subdir: app
+    gradle:
+      - yes
+
+AutoUpdateMode: Version
+UpdateCheckMode: Tags
+CurrentVersion: 0.3.6
+CurrentVersionCode: 10

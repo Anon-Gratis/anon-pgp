@@ -1,0 +1,1 @@
+Local-only OpenPGP. Multiple keypairs, encrypt, sign, QR exchange.

@@ -14,21 +14,63 @@
 
         <TextView
             style="@style/SectionHeader"
-            android:text="// RECIPIENT" />
+            android:text="// ENCRYPTION TYPE" />
 
-        <TextView
-            android:id="@+id/recipientPicker"
+        <RadioGroup
+            android:id="@+id/encryptionTypeGroup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/anon_dim"
-            android:padding="14dp"
-            android:textColor="@color/anon_white"
-            android:textSize="12sp"
-            android:fontFamily="monospace"
-            android:text="(tap to choose contact)"
-            android:layout_marginBottom="16dp"
-            android:clickable="true"
-            android:focusable="true" />
+            android:orientation="horizontal"
+            android:layout_marginBottom="12dp">
+
+            <RadioButton
+                android:id="@+id/typeAsymmetric"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="TO RECIPIENT"
+                android:textColor="@color/anon_white"
+                android:textSize="12sp"
+                android:fontFamily="monospace"
+                android:checked="true"
+                android:buttonTint="@color/anon_white" />
+
+            <RadioButton
+                android:id="@+id/typeSymmetric"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="PASSPHRASE"
+                android:textColor="@color/anon_white"
+                android:textSize="12sp"
+                android:fontFamily="monospace"
+                android:buttonTint="@color/anon_white" />
+        </RadioGroup>
+
+        <LinearLayout
+            android:id="@+id/recipientPanel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/SectionHeader"
+                android:text="// RECIPIENT" />
+
+            <TextView
+                android:id="@+id/recipientPicker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/anon_dim"
+                android:padding="14dp"
+                android:textColor="@color/anon_white"
+                android:textSize="12sp"
+                android:fontFamily="monospace"
+                android:text="(tap to choose contact)"
+                android:layout_marginBottom="16dp"
+                android:clickable="true"
+                android:focusable="true" />
+        </LinearLayout>
 
         <TextView
             style="@style/SectionHeader"

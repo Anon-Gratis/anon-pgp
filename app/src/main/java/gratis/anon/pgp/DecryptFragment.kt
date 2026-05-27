@@ -85,11 +85,25 @@ class DecryptFragment : Fragment() {
     }
 
     private fun onDecryptText() {
+        val ct = ciphertextIn.text.toString().trim()
+        if (ct.isEmpty()) return UiUtils.toast(requireContext(), "nothing to decrypt")
+
+        // Peek at the ciphertext to decide which prompt + decrypt path to use.
+        // Public-key-encrypted ciphertexts use the active key's passphrase;
+        // symmetric ciphertexts use whatever passphrase the sender chose.
+        when (PgpHelper.classifyCiphertext(ct.toByteArray())) {
+            PgpHelper.CiphertextKind.Symmetric -> promptSymmetricAndDecrypt(ct)
+            PgpHelper.CiphertextKind.PublicKey,
+            PgpHelper.CiphertextKind.Mixed -> decryptWithActiveKey(ct)
+            PgpHelper.CiphertextKind.Unknown ->
+                UiUtils.toast(requireContext(), "not a recognised OpenPGP message")
+        }
+    }
+
+    private fun decryptWithActiveKey(ct: String) {
         val ring = Session.activeRing
             ?: return UiUtils.toast(requireContext(), "no active key — go to IDENTITY tab")
         val fp = PgpHelper.fingerprintCompact(ring.publicKey)
-        val ct = ciphertextIn.text.toString().trim()
-        if (ct.isEmpty()) return UiUtils.toast(requireContext(), "nothing to decrypt")
         UiUtils.ensurePassphrase(requireContext(), fp) { pass ->
             status("decrypting…")
             scope.launch {
@@ -105,6 +119,37 @@ class DecryptFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun promptSymmetricAndDecrypt(ct: String) {
+        val pwField = UiUtils.dialogEditText(
+            requireContext(),
+            hint = "Decryption passphrase",
+            inputType = android.text.InputType.TYPE_CLASS_TEXT or
+                android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD,
+        )
+        androidx.appcompat.app.AlertDialog.Builder(requireContext())
+            .setTitle("Symmetric ciphertext")
+            .setMessage("This message is encrypted with a passphrase, not a key.")
+            .setView(pwField)
+            .setNegativeButton(R.string.cancel, null)
+            .setPositiveButton("DECRYPT") { _, _ ->
+                val pass = pwField.text.toString()
+                if (pass.isEmpty()) return@setPositiveButton
+                status("decrypting (symmetric)…")
+                scope.launch {
+                    try {
+                        val plain = withContext(Dispatchers.Default) {
+                            PgpHelper.decryptSymmetric(ct.toByteArray(), pass.toCharArray())
+                        }
+                        plaintextOut.setText(String(plain))
+                        status("> decrypted ${ct.length} bytes → ${plain.size} chars (symmetric)")
+                    } catch (t: Throwable) {
+                        status("DECRYPT FAILED: ${t.message}")
+                    }
+                }
+            }
+            .show()
     }
 
     private fun onInputPicked(uri: Uri) {

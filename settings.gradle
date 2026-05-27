@@ -1,2 +1,14 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+        // Compose Multiplatform plugin distribution channel.
+        maven { url = 'https://maven.pkg.jetbrains.space/public/p/compose/dev' }
+    }
+}
+
 rootProject.name = 'AnonPGP'
 include ':app'
+include ':core'
+include ':desktop'

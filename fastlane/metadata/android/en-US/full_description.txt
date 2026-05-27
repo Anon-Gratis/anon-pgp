@@ -1,0 +1,19 @@
+Anon PGP is a local-only OpenPGP suite for Android. It generates keys, encrypts and decrypts messages and files, signs and verifies, and exchanges public keys via QR code — all without the app ever touching the network.
+
+The app does not request the INTERNET permission. Key exchange happens out-of-band: paste, QR scan, or file share. This is by design — less attack surface, no telemetry, no servers to trust.
+
+Features:
+
+* Multiple keypairs side-by-side, switchable per operation
+* Curve25519 (ed25519/cv25519) and RSA key generation
+* Encrypt and decrypt text or files
+* Detached and inline signatures, verification against any imported key
+* QR encode public keys for in-person exchange; scan QR to import
+* App lock with PIN and biometric unlock (fingerprint/face)
+* Panic API support — wipes keys and exits when triggered by a panic button app
+* No network permissions, no analytics, no third-party trackers
+* Single APK, no Google Play Services dependencies
+
+Built on Bouncy Castle (bcpg/bcprov). All cryptographic operations run on-device. Source code is GPL-3.0-or-later.
+
+Part of the anonymous.gratis project — privacy-respecting Android apps for at-risk users.

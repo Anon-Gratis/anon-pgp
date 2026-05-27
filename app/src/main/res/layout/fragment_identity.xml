@@ -124,6 +124,14 @@
         </LinearLayout>
 
         <Button
+            android:id="@+id/btnMaintenance"
+            style="@style/AnonBtn"
+            android:layout_width="match_parent"
+            android:text="KEY MAINTENANCE…"
+            android:enabled="false"
+            android:layout_marginBottom="4dp" />
+
+        <Button
             android:id="@+id/btnDeleteActive"
             style="@style/AnonBtn"
             android:layout_width="match_parent"

@@ -1,0 +1,27 @@
+plugins {
+    id 'java-library'
+    id 'org.jetbrains.kotlin.jvm'  // version managed in root build.gradle
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+kotlin {
+    jvmToolchain(17)
+}
+
+dependencies {
+    // OpenPGP + post-quantum primitives. Bumped to 1.84 in Phase 2 for the
+    // composite ML-KEM / ML-DSA OpenPGP packet wrappers introduced by
+    // draft-ietf-openpgp-pqc support in bcpg.
+    api 'org.bouncycastle:bcpg-jdk18on:1.84'
+    api 'org.bouncycastle:bcprov-jdk18on:1.84'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+}
+
+test {
+    useJUnitPlatform()
+}

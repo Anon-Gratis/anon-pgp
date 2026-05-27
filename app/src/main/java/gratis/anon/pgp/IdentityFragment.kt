@@ -38,6 +38,7 @@ class IdentityFragment : Fragment() {
     private lateinit var btnShowQr: Button
     private lateinit var btnSavePubFile: Button
     private lateinit var btnExportSecret: Button
+    private lateinit var btnMaintenance: Button
     private lateinit var btnDeleteActive: Button
 
     private val adapter = KeyAdapter(::onKeyClicked)
@@ -82,6 +83,7 @@ class IdentityFragment : Fragment() {
         btnShowQr = view.findViewById(R.id.btnShowQr)
         btnSavePubFile = view.findViewById(R.id.btnSavePubFile)
         btnExportSecret = view.findViewById(R.id.btnExportSecret)
+        btnMaintenance = view.findViewById(R.id.btnMaintenance)
         btnDeleteActive = view.findViewById(R.id.btnDeleteActive)
 
         recyclerKeys.layoutManager = LinearLayoutManager(requireContext())
@@ -93,6 +95,7 @@ class IdentityFragment : Fragment() {
         btnShowQr.setOnClickListener { onShowQr() }
         btnSavePubFile.setOnClickListener { onExportPub() }
         btnExportSecret.setOnClickListener { onExportSecret() }
+        btnMaintenance.setOnClickListener { onMaintenanceMenu() }
         btnDeleteActive.setOnClickListener { onDeleteActive() }
 
         refresh()
@@ -124,7 +127,150 @@ class IdentityFragment : Fragment() {
         btnShowQr.isEnabled = enabled
         btnSavePubFile.isEnabled = enabled
         btnExportSecret.isEnabled = enabled
+        btnMaintenance.isEnabled = enabled
         btnDeleteActive.isEnabled = enabled
+    }
+
+    // ─── Key MAINTENANCE actions (subkey / expiry / revocation cert) ────
+
+    private fun onMaintenanceMenu() {
+        val ring = Session.activeRing ?: return
+        val active = vault().getActive() ?: return
+        val expiryLine = PgpHelper.primaryExpiry(ring)
+            ?.let { java.text.SimpleDateFormat("yyyy-MM-dd").format(java.util.Date(it.epochSecond * 1000)) }
+            ?: "never"
+        val revokedLine = if (PgpHelper.isRevoked(ring)) "  (REVOKED)" else ""
+        AlertDialog.Builder(requireContext())
+            .setTitle("Key maintenance$revokedLine")
+            .setMessage("${active.displayName}\nExpires: $expiryLine")
+            .setItems(arrayOf(
+                "Add encryption subkey",
+                "Set primary expiry",
+                "Generate revocation certificate",
+            )) { _, which ->
+                when (which) {
+                    0 -> onAddSubkey(active)
+                    1 -> onSetExpiry(active)
+                    2 -> onGenerateRevocation(active)
+                }
+            }
+            .setNegativeButton(R.string.cancel, null)
+            .show()
+    }
+
+    private fun onAddSubkey(active: KeyVault.Entry) {
+        // Algorithm picker first.
+        val labels = arrayOf(
+            "X25519  (modern)",
+            "RSA-3072  (legacy)",
+        )
+        val algos = arrayOf(PgpHelper.SubkeyAlgo.X25519, PgpHelper.SubkeyAlgo.RSA_3072)
+        var picked = 0
+        AlertDialog.Builder(requireContext())
+            .setTitle("Add encryption subkey")
+            .setSingleChoiceItems(labels, picked) { _, w -> picked = w }
+            .setNegativeButton(R.string.cancel, null)
+            .setPositiveButton("NEXT") { _, _ ->
+                UiUtils.ensurePassphrase(requireContext(), active.fingerprint) { pass ->
+                    status("adding subkey…")
+                    scope.launch {
+                        try {
+                            val updated = withContext(Dispatchers.Default) {
+                                PgpHelper.addEncryptionSubkey(active.ring, pass, algos[picked])
+                            }
+                            val sidecar = vault().rawPqcSidecar(active.fingerprint)
+                            vault().add(updated, sidecar)
+                            Session.activeRing = vault().getActive()?.ring
+                            refresh()
+                            status("> added ${algos[picked].name} subkey")
+                        } catch (t: Throwable) {
+                            status("ERROR: ${t.message}")
+                            Session.clearPassphrase(active.fingerprint)
+                        }
+                    }
+                }
+            }
+            .show()
+    }
+
+    private fun onSetExpiry(active: KeyVault.Entry) {
+        val daysField = UiUtils.dialogEditText(
+            requireContext(),
+            hint = "Days from today (0 = never expire)",
+            inputType = InputType.TYPE_CLASS_NUMBER,
+            initial = "365",
+        )
+        AlertDialog.Builder(requireContext())
+            .setTitle("Set primary-key expiry")
+            .setMessage("Enter the number of days from today. 0 = never expire.")
+            .setView(daysField)
+            .setNegativeButton(R.string.cancel, null)
+            .setPositiveButton("APPLY") { _, _ ->
+                val days = daysField.text.toString().toLongOrNull() ?: return@setPositiveButton
+                UiUtils.ensurePassphrase(requireContext(), active.fingerprint) { pass ->
+                    status("updating expiry…")
+                    scope.launch {
+                        try {
+                            val expiry = if (days <= 0L) null else
+                                java.time.Instant.now().plus(days, java.time.temporal.ChronoUnit.DAYS)
+                            val updated = withContext(Dispatchers.Default) {
+                                PgpHelper.setPrimaryExpiry(active.ring, expiry, pass)
+                            }
+                            val sidecar = vault().rawPqcSidecar(active.fingerprint)
+                            vault().add(updated, sidecar)
+                            Session.activeRing = vault().getActive()?.ring
+                            refresh()
+                            status(
+                                if (expiry == null) "> expiry cleared"
+                                else "> expires in $days day(s)"
+                            )
+                        } catch (t: Throwable) {
+                            status("ERROR: ${t.message}")
+                            Session.clearPassphrase(active.fingerprint)
+                        }
+                    }
+                }
+            }
+            .show()
+    }
+
+    private fun onGenerateRevocation(active: KeyVault.Entry) {
+        val reasons = PgpHelper.RevocationReason.values()
+        var picked = 0
+        AlertDialog.Builder(requireContext())
+            .setTitle("Reason for revocation")
+            .setSingleChoiceItems(reasons.map { it.name }.toTypedArray(), picked) { _, w -> picked = w }
+            .setNegativeButton(R.string.cancel, null)
+            .setPositiveButton("NEXT") { _, _ ->
+                UiUtils.ensurePassphrase(requireContext(), active.fingerprint) { pass ->
+                    scope.launch {
+                        try {
+                            val cert = withContext(Dispatchers.Default) {
+                                PgpHelper.generateRevocationCert(active.ring, pass, reasons[picked])
+                            }
+                            UiUtils.copyToClipboard(
+                                requireContext(),
+                                "Anon PGP revocation cert",
+                                String(cert)
+                            )
+                            status("> revocation cert copied to clipboard — save it offline")
+                            AlertDialog.Builder(requireContext())
+                                .setTitle("Revocation certificate")
+                                .setMessage(
+                                    "Cert copied to clipboard. Paste it somewhere safe — " +
+                                        "ideally printed and stored offline. Importing it " +
+                                        "anywhere later will revoke this key."
+                                )
+                                .setPositiveButton("DONE", null)
+                                .show()
+                        } catch (t: Throwable) {
+                            status("ERROR: ${t.message}")
+                            Session.clearPassphrase(active.fingerprint)
+                        }
+                    }
+                }
+            }
+            .show()
     }
 
     // ─── Adapter callback ────────────────────────────────────────────────
@@ -155,12 +301,40 @@ class IdentityFragment : Fragment() {
             .setNegativeButton(R.string.cancel, null)
             .setPositiveButton("NEXT") { _, _ ->
                 val identity = idField.text.toString().ifBlank { "anon@anon.gratis" }
-                promptPassphraseForGenerate(identity)
+                promptAlgoForGenerate(identity)
             }
             .show()
     }
 
-    private fun promptPassphraseForGenerate(identity: String) {
+    /**
+     * Three key flavors, presented in order of recommendation. Quantum-safe is
+     * default for new keys. Classical options remain available because PQC
+     * messages only work AnonPGP↔AnonPGP — to talk to GnuPG/Sequoia/etc. peers
+     * the classical key flavor is what they'll consume.
+     */
+    private fun promptAlgoForGenerate(identity: String) {
+        val labels = arrayOf(
+            "Quantum-safe  (Ed25519 + ML-DSA + ML-KEM)",
+            "Classical Ed25519  (modern, fast)",
+            "Classical RSA-3072  (broadest interop)"
+        )
+        val algos = arrayOf(
+            PgpHelper.KeyAlgo.HYBRID_PQC,
+            PgpHelper.KeyAlgo.CLASSICAL_ED25519,
+            PgpHelper.KeyAlgo.CLASSICAL_RSA
+        )
+        var picked = 0
+        AlertDialog.Builder(requireContext())
+            .setTitle("New key — algorithm")
+            .setSingleChoiceItems(labels, picked) { _, which -> picked = which }
+            .setNegativeButton(R.string.cancel, null)
+            .setPositiveButton("NEXT") { _, _ ->
+                promptPassphraseForGenerate(identity, algos[picked])
+            }
+            .show()
+    }
+
+    private fun promptPassphraseForGenerate(identity: String, algo: PgpHelper.KeyAlgo) {
         val pwField = UiUtils.dialogEditText(
             requireContext(),
             hint = "Choose a passphrase (8+ chars)",
@@ -180,25 +354,31 @@ class IdentityFragment : Fragment() {
                     UiUtils.toast(requireContext(), "passphrase must be at least 8 chars")
                     return@setPositiveButton
                 }
-                doGenerate(identity, pass.toCharArray())
+                doGenerate(identity, algo, pass.toCharArray())
             }
             .show()
     }
 
-    private fun doGenerate(identity: String, passphrase: CharArray) {
-        status("generating 3072-bit RSA keypair (slow — ~10-30s)")
+    private fun doGenerate(identity: String, algo: PgpHelper.KeyAlgo, passphrase: CharArray) {
+        val label = when (algo) {
+            PgpHelper.KeyAlgo.HYBRID_PQC        -> "quantum-safe hybrid"
+            PgpHelper.KeyAlgo.CLASSICAL_ED25519 -> "Ed25519/X25519"
+            PgpHelper.KeyAlgo.CLASSICAL_RSA     -> "RSA-3072 (slow — ~10-30s)"
+        }
+        status("generating $label keypair…")
         btnGenerate.isEnabled = false
         scope.launch {
             try {
-                val armored = withContext(Dispatchers.Default) {
-                    PgpHelper.generateSecretKeyRing(identity, passphrase)
+                val generated = withContext(Dispatchers.Default) {
+                    PgpHelper.generateSecretKeyRing(identity, passphrase, algo)
                 }
-                val entry = vault().add(armored)
+                val entry = vault().add(generated)
                 vault().setActiveFingerprint(entry.fingerprint)
                 Session.activeRing = entry.ring
                 Session.setPassphrase(entry.fingerprint, passphrase)
                 refresh()
-                status("> generated '${entry.displayName}' (${entry.prettyFingerprint})")
+                val flavor = if (entry.hasPqc) "hybrid PQC" else "classical"
+                status("> generated $flavor '${entry.displayName}' (${entry.prettyFingerprint})")
             } catch (t: Throwable) {
                 status("ERROR: ${t.message}")
             } finally {

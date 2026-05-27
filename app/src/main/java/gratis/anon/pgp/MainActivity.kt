@@ -31,8 +31,8 @@ class MainActivity : AppCompatActivity() {
         // (PGP 0.3.5 bug.)
         setContentView(R.layout.activity_main)
 
-        vault = KeyVault(this)
-        roster = ContactRoster(this)
+        vault = KeyVault(filesDir, AndroidPrefs(this, "key_vault"))
+        roster = ContactRoster(filesDir)
 
         // Restore active key on launch (vault.migrateLegacyIfPresent() in init
         // has already imported any v0.2.x single-key file).
